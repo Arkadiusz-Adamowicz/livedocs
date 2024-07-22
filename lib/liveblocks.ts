@@ -1,3 +1,5 @@
+"use server";
+
 import { Liveblocks } from "@liveblocks/node";
 
 export const liveblocks = new Liveblocks({
