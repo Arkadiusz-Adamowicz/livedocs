@@ -7,6 +7,8 @@ import Image from "next/image";
 import { getDocuments } from "@/lib/actions/room.actions";
 import Link from "next/link";
 import { dateConverter } from "@/lib/utils";
+import { DeleteModal } from "@/components/DeleteModal";
+import Notification from "@/components/Notification";
 
 const Home = async () => {
   const clerkUser = await currentUser();
@@ -21,7 +23,7 @@ const Home = async () => {
       <main className="home-container">
         <Header className="sticky, left-8 top-0">
           <div className="flex items-center gap-2 lg:gap-4">
-            Notification
+            <Notification />
             <SignedIn>
               <UserButton />
             </SignedIn>
@@ -58,7 +60,7 @@ const Home = async () => {
                       </p>
                     </div>
                   </Link>
-                  {/* TODO: delete button */}
+                  <DeleteModal roomId={id} />
                 </li>
               ))}
             </ul>
