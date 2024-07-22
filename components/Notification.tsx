@@ -1,29 +1,30 @@
 "use client";
 
-import React, { ReactNode } from "react";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import Image from "next/image";
-import {
-  useInboxNotifications,
-  useUnreadInboxNotificationsCount,
-} from "@liveblocks/react/suspense";
 import {
   InboxNotification,
   InboxNotificationList,
   LiveblocksUIConfig,
 } from "@liveblocks/react-ui";
+import {
+  useInboxNotifications,
+  useUnreadInboxNotificationsCount,
+} from "@liveblocks/react/suspense";
+import Image from "next/image";
+import { ReactNode } from "react";
 
-const Notification = () => {
+const Notifications = () => {
   const { inboxNotifications } = useInboxNotifications();
   const { count } = useUnreadInboxNotificationsCount();
 
   const unreadNotifications = inboxNotifications.filter(
     (notification) => !notification.readAt,
   );
+
   return (
     <Popover>
       <PopoverTrigger className="relative flex size-10 items-center justify-center rounded-lg">
@@ -106,4 +107,4 @@ const Notification = () => {
   );
 };
 
-export default Notification;
+export default Notifications;
