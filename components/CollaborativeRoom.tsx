@@ -1,15 +1,16 @@
-'use client';
+"use client";
 
-import { RoomProvider, ClientSideSuspense } from '@liveblocks/react/suspense';
-import { Editor } from '@/components/editor/Editor';
-import Header from '@/components/Header';
-import { SignInButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs';
-import ActiveCollabolators from './ActiveCollabolators';
-import { useEffect, useRef, useState } from 'react';
-import { Input } from './ui/input';
-import Image from 'next/image';
-import { updateDocument } from '@/lib/actions/room.actions';
-import Loader from './Loader';
+import { RoomProvider, ClientSideSuspense } from "@liveblocks/react/suspense";
+import { Editor } from "@/components/editor/Editor";
+import Header from "@/components/Header";
+import { SignInButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
+import ActiveCollabolators from "./ActiveCollabolators";
+import { useEffect, useRef, useState } from "react";
+import { Input } from "./ui/input";
+import Image from "next/image";
+import { updateDocument } from "@/lib/actions/room.actions";
+import Loader from "./Loader";
+import ShareModal from "./ShareModal";
 
 const CollaborativeRoom = ({
   roomId,
@@ -24,9 +25,9 @@ const CollaborativeRoom = ({
   const inputRef = useRef<HTMLInputElement>(null);
 
   const updateTitleHandler = async (
-    e: React.KeyboardEvent<HTMLInputElement>
+    e: React.KeyboardEvent<HTMLInputElement>,
   ) => {
-    if (e.key === 'Enter') {
+    if (e.key === "Enter") {
       setLoading(true);
 
       try {
@@ -54,10 +55,10 @@ const CollaborativeRoom = ({
         updateDocument(roomId, documentTitle);
       }
     };
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
 
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [roomId, documentTitle]);
 
@@ -70,48 +71,55 @@ const CollaborativeRoom = ({
   return (
     <RoomProvider id={roomId}>
       <ClientSideSuspense fallback={<Loader />}>
-        <div className='collaborative-room'>
+        <div className="collaborative-room">
           <Header>
             <div
               ref={containerRef}
-              className='flex w-fit items-center justify-center gap-2'
+              className="flex w-fit items-center justify-center gap-2"
             >
               {editing && !loading ? (
                 <Input
-                  type='text'
+                  type="text"
                   value={documentTitle}
                   ref={inputRef}
-                  placeholder='Enter title'
-                  onChange={e => setDocumentTitle(e.target.value)}
+                  placeholder="Enter title"
+                  onChange={(e) => setDocumentTitle(e.target.value)}
                   onKeyDown={updateTitleHandler}
                   disabled={!editing}
-                  className='document-title-input'
+                  className="document-title-input"
                 />
               ) : (
                 <>
-                  <p className='document-title'>{documentTitle}</p>
+                  <p className="document-title">{documentTitle}</p>
                 </>
               )}
-              {currentUserType === 'editor' && !editing && (
+              {currentUserType === "editor" && !editing && (
                 <Image
-                  src='/assets/icons/edit.svg'
-                  alt='edit'
+                  src="/assets/icons/edit.svg"
+                  alt="edit"
                   width={24}
                   height={24}
                   onClick={() => {
-                    setDocumentTitle('');
+                    setDocumentTitle("");
                     setEditing(true);
                   }}
-                  className='cursor-pointer'
+                  className="cursor-pointer"
                 />
               )}
 
-              {currentUserType !== 'editor' && !editing && (
-                <p className='view-only-tag'>View only</p>
+              {currentUserType !== "editor" && !editing && (
+                <p className="view-only-tag">View only</p>
               )}
+              {loading && <p className="text-sm text-gray-400">saving...</p>}
             </div>
-            <div className='flex w-full flex-1 justify-end gap-2 sm:gap-3'>
+            <div className="flex w-full flex-1 justify-end gap-2 sm:gap-3">
               <ActiveCollabolators />
+              <ShareModal
+                roomId={roomId}
+                collaborators={users}
+                creatorId={roomMetadata.creatorId}
+                currentUserType={currentUserType}
+              />
               <SignedOut>
                 <SignInButton />
               </SignedOut>
